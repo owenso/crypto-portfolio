@@ -11,12 +11,13 @@ var connection = new autobahn.Connection({
 
 module.exports = function() {
     connection.onopen = function(session) {
-        function tickerEvent(args, kwargs) {
-            console.log('//////')
-            console.log(args)
-            console.log('//////')
-
-            console.info(kwargs)
+        function tickerEvent(args) {
+            // console.log('//////')
+            // console.log(args)
+            // console.log('//////')
+            if (args[0] === "USDT_ETH") {
+                console.log(args)
+            }
         }
         session.subscribe('ticker', tickerEvent);
         // Appropriate labels for these data are, in order: currencyPair, last, lowestAsk, highestBid, percentChange, baseVolume, quoteVolume, isFrozen, 24hrHigh, 24hrLow
