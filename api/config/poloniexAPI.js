@@ -1,8 +1,8 @@
 // https://pastebin.com/dMX7mZE0
 // https://poloniex.com/support/api/
-var autobahn = require('autobahn');
-var wsuri = "wss://api.poloniex.com";
-var connection = new autobahn.Connection({
+const autobahn = require('autobahn');
+const wsuri = "wss://api.poloniex.com";
+const connection = new autobahn.Connection({
     url: wsuri,
     realm: "realm1"
 });
@@ -12,11 +12,25 @@ var connection = new autobahn.Connection({
 module.exports = function() {
     connection.onopen = function(session) {
         function tickerEvent(args) {
-            // console.log('//////')
-            // console.log(args)
-            // console.log('//////')
-            if (args[0] === "USDT_ETH") {
+            if (args[0].indexOf('SIA')>=0){
+                console.log('//////')
                 console.log(args)
+                console.log('//////')
+            }
+
+
+            switch (args[0]) {
+                case 'USDT_ETH':
+                    io.emit('USDT_ETH', args[1])
+                    break;
+                case 'USDT_BTC':
+                    io.emit('USDT_BTC', args[1])
+                    break;
+                case 'USDT_LTC':
+                    io.emit('USDT_LTC', args[1])
+                    break;
+                default:
+                    break;
             }
         }
         session.subscribe('ticker', tickerEvent);

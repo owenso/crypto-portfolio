@@ -7,7 +7,7 @@ const compress = require('compression');
 module.exports = function() {
 	const app = express();
 	const server = http.createServer(app);
-	const io = socketio.listen(server);
+	global.io = socketio.listen(server);
 
 	if (process.env.NODE_ENV === 'local') {
 		//for local server

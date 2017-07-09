@@ -17,6 +17,7 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "no-console": 1,
         "no-unused-vars": "warn",
         "react/jsx-uses-vars": ["error"],
         "react/jsx-curly-spacing": 1,

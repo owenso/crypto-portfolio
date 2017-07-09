@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Landing from './login/Landing';
 import Home from './home/Home';
-const io = require('socket.io-client');
-const socket = io('localhost:3001');
+import priceUpdates from '../lib/priceUpdates';
 
 @connect((store) => {
     return {
@@ -16,7 +15,9 @@ export default class App extends Component {
 		return false;
 	}
 
-    componentDidMount() {
+    componentWillMount() {
+        const {dispatch} = this.props;
+        priceUpdates(dispatch);
     }
 
     render() {
