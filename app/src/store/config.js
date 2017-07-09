@@ -8,7 +8,9 @@ import { routerMiddleware } from 'react-router-redux';
 const middleware = [thunkMiddleware, routerMiddleware(browserHistory)];
 
 if (process.env.NODE_ENV !== 'prod') {  
-	const loggerMiddleware = createLogger();
+	const loggerMiddleware = createLogger({
+    level:'info'
+  });
 	middleware.push(loggerMiddleware);
 }
 

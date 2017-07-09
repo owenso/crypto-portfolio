@@ -12,11 +12,11 @@ const connection = new autobahn.Connection({
 module.exports = function() {
     connection.onopen = function(session) {
         function tickerEvent(args) {
-            if (args[0].indexOf('SIA')>=0){
-                console.log('//////')
-                console.log(args)
-                console.log('//////')
-            }
+            // if (args[0].indexOf('SIA')>=0){
+                // console.log('//////')
+                // console.log(args)
+                // console.log('//////')
+            // }
 
 
             switch (args[0]) {
@@ -39,6 +39,7 @@ module.exports = function() {
 
     connection.onclose = function() {
         console.log("Websocket connection closed");
+        io.emit('server_error', "Connection to Poloniex Was Lost.")
     }
 
     connection.open();

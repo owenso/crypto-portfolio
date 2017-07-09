@@ -1,5 +1,6 @@
 export const priceActionTypes = {
     BTCUSD:"BTCUSD",
     ETHUSD:"ETHUSD",
-    LTCUSD:"LTCUSD"
+    LTCUSD:"LTCUSD",
+    ALTCOINS: "ALTCOINS"
 }

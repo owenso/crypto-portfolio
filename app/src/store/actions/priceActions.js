@@ -33,3 +33,14 @@ export function litecoinUSDPrice(price) {
         }
 	}
 }
+
+export function altcoinUSDPrices(altcoins) {
+    const {ALTCOINS} = priceActionTypes;
+	return {
+		type: ALTCOINS,
+		payload: {
+            altcoins,
+            timestamp: Date.now()
+        }
+	}
+}
