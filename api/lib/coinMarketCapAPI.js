@@ -1,8 +1,9 @@
+//http://coinmarketcap.com/api/
+
 const axios = require('axios');
 
 module.exports = function(){
-    const coinMarketCapURL = 'https://api.coinmarketcap.com/v1/ticker/'
-    //or to cap it - https://api.coinmarketcap.com/v1/ticker/?limit=10
+    const coinMarketCapURL = 'https://api.coinmarketcap.com/v1/ticker/?limit=200'
     function callCMC() {
         axios.get(coinMarketCapURL)
             .then((res) => {
