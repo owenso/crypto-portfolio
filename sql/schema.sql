@@ -12,7 +12,8 @@ CREATE TABLE users(
 	email VARCHAR(255) UNIQUE,
     provider VARCHAR(50),
     created TIMESTAMP DEFAULT current_timestamp,
-    updated TIMESTAMP DEFAULT current_timestamp
+    updated TIMESTAMP DEFAULT current_timestamp,
+    lastseen TIMESTAMP DEFAULT current_timestamp
 );
 
 CREATE TABLE cryptos(

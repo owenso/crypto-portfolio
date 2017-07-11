@@ -3,11 +3,12 @@ const morgan = require('morgan');
 const socketio = require('socket.io');
 const http = require('http');
 const compress = require('compression');
+const bodyParser = require('body-parser');
+const app = express();
+const server = http.createServer(app);
+global.io = socketio.listen(server);
 
 module.exports = function() {
-	const app = express();
-	const server = http.createServer(app);
-	global.io = socketio.listen(server);
 
 	if (process.env.NODE_ENV === 'local') {
 		//for local server
@@ -22,8 +23,17 @@ module.exports = function() {
 	}
 
 
+
+
+
+	app.use(bodyParser.urlencoded({ extended: false }))
+	app.use(bodyParser.json())
+
+
+
+
 	//Routes
-	// require('../app/routes/index.server.routes.js')(app);
+	require('../routes/index')(app);
 
 /**************************************/
 /* SOCKETS */
