@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const socketio = require('socket.io');
 const http = require('http');
+const passport = require('passport');
 const compress = require('compression');
 const bodyParser = require('body-parser');
 const app = express();
@@ -23,7 +24,8 @@ module.exports = function() {
 	}
 
 
-
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 
 	app.use(bodyParser.urlencoded({ extended: false }))

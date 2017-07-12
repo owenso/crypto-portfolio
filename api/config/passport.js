@@ -21,4 +21,6 @@ module.exports = function() {
     // require('./strategies/facebook.js')();
     // require('./strategies/google.js')();
     // require('./strategies/facebook-token.js')();
+
+    return passport;
 };

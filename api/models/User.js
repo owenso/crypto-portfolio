@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwtSecret = require('../config').jwtSecret;
 const salt = bcrypt.genSaltSync(10);
+const _ = require('lodash');
 
 //find user by id
 
@@ -14,26 +15,29 @@ const salt = bcrypt.genSaltSync(10);
 module.exports.updateLastseenAndReturnToken = function(user) {
     return new Promise(function (resolve, reject) {
         const client = new pg.Client(connectionString);
-
-        const query = "UPDATE users SET lastseen=CURRENT_TIMESTAMP WHERE id=($1)";
+        client.connect();
+        const query = "UPDATE users SET lastseen=CURRENT_TIMESTAMP WHERE id=($1) RETURNING *";
         client.query(query, [user.id], function(err, result){
             client.end();
 
             if (err) {
-                reject(err);
+                return reject({
+                    success: false,
+                    message: err
+                })
             } else {
                 try {
-                    let token = jwt.sign(user, jwtSecret, {expiresIn: 60 * 60 * 24 * 1000});
-                    resolve({
+                    let token = jwt.sign(result.rows[0], jwtSecret, {expiresIn: 60 * 60 * 24 * 1000});
+                    return resolve({
                         success: true,
                         message: 'User authenticated',
-                        user: _.omit(user, ['password']),
+                        user: _.omit(result.rows[0], ['password']),
                         token: token
                     });
-                } catch(err) {
-                    reject({
+                } catch(error) {
+                    return reject({
                         success: false,
-                        message: err
+                        message: error
                     })
                 }
             }
@@ -43,41 +47,37 @@ module.exports.updateLastseenAndReturnToken = function(user) {
 
 module.exports.signUp = function(newUser) {
     return new Promise(function (resolve, reject) {
-
-        const hashedPass = bcrypt.hashSync(req.body.password, salt);
-        const query = 'INSERT INTO users (firstName, lastName, email, provider, password) '
-        client.query(query, [req.body.username, req.body.lastName, req.body.email, 'local', hashedPass], function(err, result) {
-
+        const client = new pg.Client(connectionString);
+        client.connect();
+        const hashedPass = bcrypt.hashSync(newUser.password, salt);
+        const query = 'INSERT INTO users (username, firstName, lastName, email, provider, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;'
+        client.query(query, [newUser.username, newUser.firstName, newUser.lastName, newUser.email, 'local', hashedPass], function(err, result) {
+            client.end();
                 if (err) {
-                    console.log(err)
-                    reject({
+                    return reject({
                         success: false,
                         message: err
                     })
                 }
-
-                let token = jwt.sign(result.recordset[0], jwtSecret, {expiresIn: 60 * 60 * 24});
-                resolve({
+                let token = jwt.sign(result.rows[0], jwtSecret, {expiresIn: 60 * 60 * 24});
+                return resolve({
                     success: true,
                     message: 'Account created',
-                    user: _.omit(result.recordset[0], ['password']),
+                    user: _.omit(result.rows[0], ['password']),
                     token: token
                 });   
         });    
     });
 }
 
-module.exports.findUserById = function(user) {
+module.exports.findUserById = function(userId, cb) {
         const client = new pg.Client(connectionString);
 
         const query = "SELECT * FROM users WHERE id=($1)";
-        client.query(query, [user.id], function(err, result){
+        client.connect();
+        client.query(query, [userId], function(err, result){
             client.end();
 
-            if (err) {
-                throw err;
-            } else {
-                return result.recordset[0];
-            }
+            cb(err, result ? result.rows[0]: null);
         })
 }
